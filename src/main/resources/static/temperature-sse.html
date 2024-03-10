@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temperature SSE via Spring App Events</title>
+</head>
+<body>
+<ul id="events">
+    <script type="application/javascript">
+        function add(msg) {
+            const event = document.createElement("li");
+            event.innerHTML = msg;
+            document.getElementById("events").appendChild(event);
+        }
+
+        let eventSource = new EventSource("/temperature-sse");
+        eventSource.onmessage = e => {
+            const t = JSON.parse(e.data);
+            const fixed = Number(t.value).toFixed(2);
+            add(fixed + ' C');
+        }
+        eventSource.onopen = () => add('Connection opened');
+        eventSource.onerror = () => add('Connection closed');
+    </script>
+</ul>
+</body>
+</html>
