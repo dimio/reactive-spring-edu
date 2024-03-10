@@ -13,7 +13,7 @@
             document.getElementById("events").appendChild(event);
         }
 
-        let eventSource = new EventSource("/temperature-sse");
+        let eventSource = new EventSource("/temperature/sse/app-events");
         eventSource.onmessage = e => {
             const t = JSON.parse(e.data);
             const fixed = Number(t.value).toFixed(2);

@@ -1,3 +1,9 @@
 spring:
   main:
     banner-mode: off
+
+app:
+  endpoint:
+    temperature:
+      sse:
+        base-path: /temperature/sse
