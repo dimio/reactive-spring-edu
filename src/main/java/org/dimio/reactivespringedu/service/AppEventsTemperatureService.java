@@ -1,8 +1,9 @@
-package org.dimio.reactivespringedu.integration;
+package org.dimio.reactivespringedu.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.dimio.reactivespringedu.dto.Temperature;
+import org.dimio.reactivespringedu.integration.RandomTemperatureProvider;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class AppEventsRandomTemperatureSensor {
+public class AppEventsTemperatureService {
     private final ApplicationEventPublisher publisher;
+    private final RandomTemperatureProvider sensor;
 
     private final Random rnd = new Random();
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -25,9 +27,7 @@ public class AppEventsRandomTemperatureSensor {
     }
 
     private void probe() {
-        var temperature = 16 + rnd.nextGaussian() * 10;
-        publisher.publishEvent(new Temperature(temperature));
-
+        publisher.publishEvent(new Temperature(sensor.measure()));
         executor.schedule(this::probe, rnd.nextInt(5), TimeUnit.SECONDS);
     }
 
